@@ -1,0 +1,46 @@
+package example.aspectj;
+
+import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.annotation.*;
+import org.springframework.stereotype.Component;
+
+
+@Aspect
+//Aspect告诉容器这是一个切面类
+@Component
+//Component将这个类导入容器
+public class HomeworkAspectj {
+
+    //pointcut获取公共的切入点
+    @Pointcut(value = "execution(public * example.controller.homeworkcontroller.*(..))")
+    public void PointCut(){ }
+
+    //@Before 表述在方法前执行
+    @Before(value = "PointCut()")
+    //JoinPoint一定要出现在参数表的第一位
+    public void divStart(JoinPoint joinPoint){
+        //获取参数
+        Object[] Arg = joinPoint.getArgs();
+        System.out.println("新增作业开始");
+    }
+    //joinPoint.getSignature()获取类的信息
+
+    //@After 表示在方法之后执行
+    @After("PointCut()")
+    public void divEnd(){
+        System.out.println("新增作业结束");
+    }
+
+    //AfterReturning 表示在返回之后执行
+    @AfterReturning(value = "PointCut()",returning ="result")
+    public void divReturn(Object result){
+        System.out.println("新增作业正常返回结果"+result+"");
+    }
+
+    //@AfterThrowing 表示抛出异常
+    @AfterThrowing(value = "PointCut()",throwing = "exception")
+    public void divException(Exception exception) {
+        System.out.println("新增作业异常"+exception+"");
+    }
+}
+
